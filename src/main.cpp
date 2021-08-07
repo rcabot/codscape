@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     auto g = std::make_unique<game>();
     text_input dev_console([&](auto command) {g->handle_command(command); });
 	
-    TCODConsole::setCustomFont("cp437_20x20.png", TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INROW, 16,16);
+    TCODConsole::setCustomFont("resources/cp437_20x20.png", TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INROW, 16,16);
 
     const Vector2 resolution{ 1920,1080 };
     const auto font_resolution{ 20 };

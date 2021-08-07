@@ -228,7 +228,7 @@ private:
 		return true;
 	}
 
-	void save_game_setup(const std::filesystem::path& path_to_game_setup_config = "./game_setup.json")
+	void save_game_setup(const std::filesystem::path& path_to_game_setup_config = "./resources/game_setup.json")
 	{
 		std::wfstream s;
 		s.open(path_to_game_setup_config, std::wfstream::out | std::wfstream::trunc);
@@ -243,7 +243,7 @@ private:
 
 	}
 
-	void load_game_setup(const std::filesystem::path& path_to_game_setup_config = "./game_setup.json")
+	void load_game_setup(const std::filesystem::path& path_to_game_setup_config = "./resources/game_setup.json")
 	{
 		std::fstream s;
 		s.open(path_to_game_setup_config, std::fstream::in);

@@ -32,6 +32,7 @@ else()
 endif()
 
 add_subdirectory("libtcod")
+file(COPY resources DESTINATION resources)
 
 find_package(SDL2 CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main libtcod::libtcod)
