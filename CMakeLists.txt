@@ -1,4 +1,6 @@
 cmake_minimum_required (VERSION 3.13)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE
@@ -10,6 +12,7 @@ project(
     codscape  # Project name, change this as needed.
     LANGUAGES C CXX
 )
+
 
 file(GLOB_RECURSE SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/src/*.cpp
