@@ -249,8 +249,9 @@ private:
 		s.open(path_to_game_setup_config, std::fstream::in);
 		if (!s)
 		{
-			// setup file did not exist! creating one...
+			std::cout << "setup file did not exist! creating one...\n";
 			save_game_setup();
+			s.open(path_to_game_setup_config, std::fstream::in);
 		}
 
 		std::stringstream json_file_buffer;
