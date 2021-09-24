@@ -75,7 +75,7 @@ public:
 				save_game_setup();
 				break;
 			case SDLK_F2:
-				add_new_person_at(player_pos_, person::generate_random_name());
+				registry_.add_new_person_at(player_pos_, person::generate_random_name(),current_map_);
 				break;
 			default:
 				break;
@@ -122,8 +122,8 @@ public:
 	}
 	void init(const TCODConsole* console)
 	{
-		make_new_gameobject<Map>("Overworld");
-		make_new_gameobject<Map>("Underworld");
+		registry_.make_new_gameobject<Map>("Overworld");
+		registry_.make_new_gameobject<Map>("Underworld");
 
 		player_sprite_ = person::generate_random_sprite();
 		player_pos_onscreen_ = { console->getWidth() / 2, console->getHeight() / 2 };
@@ -152,10 +152,10 @@ public:
 			{
 			case "person"_:
 				if (terms_list.size() < 3) return;
-				add_new_person_at(player_pos_, terms_list[2]);
+				registry_.add_new_person_at(player_pos_, terms_list[2], current_map_);
 				break;
 			case "testperson"_:
-				make_new_gameobject<person>(L"test person",  registry_.maps_[current_map_].get(), player_pos_);
+				registry_.make_new_gameobject<person>(L"test person",  registry_.maps_[current_map_].get(), player_pos_);
 				break;
 			default: 
 				break;
@@ -194,30 +194,7 @@ private:
 		return !t.is_mountain_ && !t.is_water_ && !t.is_void_ && !object_blocks_cell(pos, location);
 	}
 
-	void add_new_person_at(const Vector2& position, const std::wstring& name)
-	{
-		registry_.people_.emplace_back(std::make_unique<person>(name, registry_.maps_[current_map_].get(), position));
-	}
-
-	void add_new_person_at(const Vector2& pos, const std::string& name)
-	{
-		std::wstringstream converter;
-		converter << name.c_str();
-		add_new_person_at(pos, converter.str());
-	}
-
-	template<typename T>
-	void emplace_gameobject(std::unique_ptr<T> gameobject)
-	{
-		static_assert(false,"This game object isn't supported yet.");
-	}
-
-	template<typename T, typename...Params>
-	void make_new_gameobject(Params&&... args)
-	{
-		auto ptr{ std::make_unique<T>(args...) };
-		emplace_gameobject(std::move(ptr));
-	}
+	
 
 	bool is_onscreen(const Vector2& pos, Map* map) const
 	{
@@ -264,21 +241,14 @@ private:
 			for (auto* json_value : people_to_init)
 			{
 				const auto& json_value_as_object{ json_value->AsObject() };
-				add_new_person_at(
+				registry_.add_new_person_at(
 					Vector2(
 						json_value_as_object.at(L"x")->AsNumber(),
 						json_value_as_object.at(L"y")->AsNumber()),
-					json_value_as_object.at(L"name")->AsString());
+					json_value_as_object.at(L"name")->AsString(),current_map_);
 			}
 		}
 	}
 
 	
 };
-
-
-template <>
-void game::emplace_gameobject<person>(std::unique_ptr<person> gameobject);
-
-template <>
-void game::emplace_gameobject<Map>(std::unique_ptr<Map> gameobject);
