@@ -122,8 +122,8 @@ public:
 	}
 	void init(const TCODConsole* console)
 	{
-		registry_.make_new_gameobject<Map>("Overworld");
-		registry_.make_new_gameobject<Map>("Underworld");
+		registry_.add_map("Overworld");
+		registry_.add_map("Underworld");
 
 		player_sprite_ = person::generate_random_sprite();
 		player_pos_onscreen_ = { console->getWidth() / 2, console->getHeight() / 2 };
@@ -155,7 +155,7 @@ public:
 				registry_.add_new_person_at(player_pos_, terms_list[2], current_map_);
 				break;
 			case "testperson"_:
-				registry_.make_new_gameobject<person>(L"test person",  registry_.maps_[current_map_].get(), player_pos_);
+				registry_.add_new_person_at(player_pos_, L"test person",current_map_);
 				break;
 			default: 
 				break;

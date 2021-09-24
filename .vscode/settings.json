@@ -91,6 +91,13 @@
     "xstring": "cpp",
     "xtr1common": "cpp",
     "xtree": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "charconv": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "compare": "cpp",
+    "format": "cpp",
+    "forward_list": "cpp",
+    "optional": "cpp"
   }
 }

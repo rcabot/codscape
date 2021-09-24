@@ -34,24 +34,11 @@ public:
 		add_new_person_at(pos, converter.str(),map_index_);
 	}
 
-	template<typename T>
-	void emplace_gameobject(std::unique_ptr<T> gameobject)
+	template<class...Params>
+	void add_map(Params&&... args)
 	{
-		static_assert(false,"This game object isn't supported yet.");
-	}
-
-	template<typename T, typename...Params>
-	void make_new_gameobject(Params&&... args)
-	{
-		auto ptr{ std::make_unique<T>(args...) };
-		emplace_gameobject(std::move(ptr));
+		maps_.emplace_back(std::make_unique<Map>(args...));
 	}
 
 };
-
-template <>
-void registry::emplace_gameobject<person>(std::unique_ptr<person> gameobject);
-
-template <>
-void registry::emplace_gameobject<Map>(std::unique_ptr<Map> gameobject);
 #endif
