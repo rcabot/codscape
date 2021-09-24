@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "Person.h"
 #include "Vector2.h"
+#include "registry.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,8 +15,6 @@
 #include "JSON.h"
 #include "util_functions.h"
 
-template<typename T>
-using list = std::vector<std::unique_ptr<T>>;
 
 constexpr inline auto operator "" _(const char* p, const size_t size) -> unsigned int { return util::hash(p,size); }
 class game
@@ -24,7 +23,6 @@ public:
 	game() : player_pos_{ 0,0 },
 		time_to_next_input_{ 0 },
 		input_interval_{ .02f },
-		maps_{},
 		player_pos_onscreen_{},
 		current_map_{ 0 }
 	{
@@ -43,7 +41,7 @@ public:
 		{
 			for (auto y = 0; y < console->getHeight(); y++)
 			{
-				const auto terrain{ maps_[current_map_]->get_terrain_at(Vector2(x,y) + player_offset) };
+				const auto terrain{ registry_.maps_[current_map_]->get_terrain_at(Vector2(x,y) + player_offset) };
 				
 				console->putCharEx(x, y, terrain.character_, terrain.fg_color_,terrain.bg_color_);
 			}
@@ -52,7 +50,7 @@ public:
 
 		//draw player
 		draw_sprite(player_pos_onscreen_.x, player_pos_onscreen_.y, player_sprite_.get(), console);
-		for (const auto& person : people_)
+		for (const auto& person :  registry_.people_)
 		{
 			if (person == nullptr) continue;
 			const auto person_pos{ person->get_pos() };
@@ -93,7 +91,7 @@ public:
 	{
 		if (time_to_next_input_ <= 0.f)
 		{
-			auto& current_map = *maps_[current_map_];
+			auto& current_map = * registry_.maps_[current_map_];
 			if (keyboard_state[SDL_SCANCODE_LEFT] && player_can_move_to(Vector2(player_pos_.x - 1, player_pos_.y), current_map))
 				player_pos_.x -= 1;
 			if (keyboard_state[SDL_SCANCODE_RIGHT] && player_can_move_to(Vector2(player_pos_.x + 1, player_pos_.y), current_map))
@@ -129,7 +127,7 @@ public:
 
 		player_sprite_ = person::generate_random_sprite();
 		player_pos_onscreen_ = { console->getWidth() / 2, console->getHeight() / 2 };
-		player_pos_ = maps_[0]->get_first_position_where_terrain_is([](const Terrain& t) { return !t.is_mountain_ && !t.is_water_; }, CACHE_DIMENSION);
+		player_pos_ =  registry_.maps_[0]->get_first_position_where_terrain_is([](const Terrain& t) { return !t.is_mountain_ && !t.is_water_; }, CACHE_DIMENSION);
 
 		load_game_setup();
 	}
@@ -157,7 +155,7 @@ public:
 				add_new_person_at(player_pos_, terms_list[2]);
 				break;
 			case "testperson"_:
-				make_new_gameobject<person>(L"test person", maps_[current_map_].get(), player_pos_);
+				make_new_gameobject<person>(L"test person",  registry_.maps_[current_map_].get(), player_pos_);
 				break;
 			default: 
 				break;
@@ -173,16 +171,15 @@ private:
 	std::unique_ptr<olcSprite> player_sprite_;
 	float time_to_next_input_;
 	float input_interval_;
-	list<Map> maps_;
 	Vector2 player_pos_onscreen_;
-	list<person> people_;
 	int current_map_;
+	registry registry_;
 	
 	
 
 	bool object_blocks_cell(const Vector2& pos, const Map& location) const
 	{
-		for (const auto& person : people_)
+		for (const auto& person :  registry_.people_)
 		{
 			if (person->get_location() == &location
 				&& pos.x == person->get_pos().x
@@ -193,13 +190,13 @@ private:
 
 	bool player_can_move_to(const Vector2& pos, const Map& location) const
 	{
-		const auto t{ maps_[current_map_]->get_terrain_at(pos) };
+		const auto t{  registry_.maps_[current_map_]->get_terrain_at(pos) };
 		return !t.is_mountain_ && !t.is_water_ && !t.is_void_ && !object_blocks_cell(pos, location);
 	}
 
 	void add_new_person_at(const Vector2& position, const std::wstring& name)
 	{
-		people_.emplace_back(std::make_unique<person>(name,maps_[current_map_].get(), position));
+		registry_.people_.emplace_back(std::make_unique<person>(name, registry_.maps_[current_map_].get(), position));
 	}
 
 	void add_new_person_at(const Vector2& pos, const std::string& name)
@@ -224,7 +221,7 @@ private:
 
 	bool is_onscreen(const Vector2& pos, Map* map) const
 	{
-		if (map != maps_[current_map_].get()) return false;
+		if (map !=  registry_.maps_[current_map_].get()) return false;
 		return true;
 	}
 
@@ -233,13 +230,13 @@ private:
 		std::wfstream s;
 		s.open(path_to_game_setup_config, std::wfstream::out | std::wfstream::trunc);
 		s << R"({"people":[)";
-		for (const auto& person : people_)
+		for (const auto& person :  registry_.people_)
 		{
 			s << person->to_json_string();
-			if (person != people_.back()) s << "," << std::endl;
+			if (person !=  registry_.people_.back()) s << "," << std::endl;
 		}
 		s << "]}";
-		util::log_format("saved game state with", people_.size(),"people", "to", path_to_game_setup_config);
+		util::log_format("saved game state with",  registry_.people_.size(),"people", "to", path_to_game_setup_config);
 
 	}
 
