@@ -28,6 +28,7 @@ public:
 	void add_new_person_at(const Vector2& position, const std::wstring& name, int map_index_)
 	{
 		people_.emplace_back(std::make_unique<person>(name, maps_[map_index_].get(), position));
+		interactables_.emplace_back(std::make_unique<interactable>(position));
 	}
 
 	void add_new_person_at(const Vector2& pos, const std::string& name, int map_index_)

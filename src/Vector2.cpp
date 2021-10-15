@@ -1,4 +1,5 @@
 #include "Vector2.h"
+#include <math.h>
 
 Vector2::Vector2() = default;
 
@@ -21,5 +22,7 @@ long Vector2::hash() const
 
 float Vector2::distance(const Vector2 other) const
 {
-	return 0; //todo
+	auto a{x-other.x};
+	auto b{y-other.y};
+	return sqrt(a*a + b*b); //todo
 }
