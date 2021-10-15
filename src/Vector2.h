@@ -11,6 +11,7 @@ public:
 
 	Vector2 operator+(const Vector2& other) const;
 	long hash() const;
+	float distance(const Vector2 other) const;
 };
 
 

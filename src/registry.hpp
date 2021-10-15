@@ -4,7 +4,9 @@
 
 #include "Map.h"
 #include "Person.h"
+#include "interactable.hpp"
 #include <sstream>
+#include <limits>
 
 template<typename T>
 using ulist = std::vector<std::unique_ptr<T>>;
@@ -18,7 +20,8 @@ public:
 
 	ulist<Map> maps_;
 	ulist<person> people_;
-	registry() : maps_{}, people_{} {
+	ulist<interactable> interactables_;
+	registry() : maps_{}, people_{}, interactables_{} {
 
 	}
 
@@ -38,6 +41,23 @@ public:
 	void add_map(Params&&... args)
 	{
 		maps_.emplace_back(std::make_unique<Map>(args...));
+	}
+
+	bool try_get_nearest_interactable_object_in_radius(const Vector2 center, const float radius, interactable* nearest_interactable)
+	{
+		float min_distance{std::numeric_limits<float>::max()};
+		bool success{false};
+		for(auto& interactable : interactables_)
+		{
+			float distance = center.distance(interactable->position_);
+			if(radius > distance && distance < min_distance)
+			{
+				success = true;
+				min_distance = distance;
+				nearest_interactable = interactable.get();
+			}
+		}
+		return success;
 	}
 
 };

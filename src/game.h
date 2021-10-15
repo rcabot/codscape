@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <SDL.h>
+#include "interactable.hpp"
 
 #include "JSON.h"
 #include "util_functions.h"
@@ -89,6 +90,9 @@ public:
 
 	void process_keyboard_state(const Uint8* keyboard_state)
 	{
+		interactable* nearest_interactable_object = nullptr;
+		auto player_interaction_radius{5.f};
+		// todo: move this to a "mover" class
 		if (time_to_next_input_ <= 0.f)
 		{
 			auto& current_map = * registry_.maps_[current_map_];
@@ -100,6 +104,13 @@ public:
 				player_pos_.y -= 1;
 			if (keyboard_state[SDL_SCANCODE_DOWN] && player_can_move_to(Vector2(player_pos_.x, player_pos_.y + 1), current_map))
 				player_pos_.y += 1;
+
+			// todo: move this to an "interactor" class
+			if (keyboard_state[SDL_SCANCODE_SPACE] /*&& player_state_.can_interact_ */&& registry_.try_get_nearest_interactable_object_in_radius(player_pos_, player_interaction_radius,nearest_interactable_object))
+			{
+				nearest_interactable_object->interact();
+			}
+
 
 			time_to_next_input_ = input_interval_;
 		}
@@ -174,6 +185,7 @@ private:
 	Vector2 player_pos_onscreen_;
 	int current_map_;
 	registry registry_;
+	//player_state player_state_;
 	
 	
 
