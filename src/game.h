@@ -90,7 +90,6 @@ public:
 
 	void process_keyboard_state(const Uint8* keyboard_state)
 	{
-		interactable* nearest_interactable_object = nullptr;
 		auto player_interaction_radius{5.f};
 		// todo: move this to a "mover" class
 		if (time_to_next_input_ <= 0.f)
@@ -106,9 +105,11 @@ public:
 				player_pos_.y += 1;
 
 			// todo: move this to an "interactor" class
-			if (keyboard_state[SDL_SCANCODE_SPACE] /*&& player_state_.can_interact_ */&& registry_.try_get_nearest_interactable_object_in_radius(player_pos_, player_interaction_radius,nearest_interactable_object))
+			if (keyboard_state[SDL_SCANCODE_SPACE] /*&& player_state_.can_interact_ */)
 			{
-				nearest_interactable_object->interact();
+				auto* nearest_interactable_object = registry_.try_get_nearest_interactable_object_in_radius(player_pos_, player_interaction_radius);
+				if(nearest_interactable_object!=nullptr)
+					nearest_interactable_object->interact();
 			}
 
 

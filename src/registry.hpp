@@ -2,6 +2,7 @@
 #define REGISTRY_H
 #pragma once
 
+#include "dialogue_initiator.hpp"
 #include "Map.h"
 #include "Person.h"
 #include "interactable.hpp"
@@ -9,7 +10,7 @@
 #include <limits>
 
 template<typename T>
-using ulist = std::vector<std::unique_ptr<T>>;
+using uvector = std::vector<std::unique_ptr<T>>;
 
 class registry  
 {
@@ -18,17 +19,27 @@ private:
 
 public:
 
-	ulist<Map> maps_;
-	ulist<person> people_;
-	ulist<interactable> interactables_;
-	registry() : maps_{}, people_{}, interactables_{} {
+	uvector<Map> maps_;
+	uvector<person> people_;
+	std::vector<interactable> interactables_;
+	dialogue_initiator dialogue_initiator_;
+	registry() : maps_{}, people_{}, interactables_{}, dialogue_initiator_{} {
 
 	}
 
-	void add_new_person_at(const Vector2& position, const std::wstring& name, int map_index_)
+	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
+    {
+        // todo - allocate this somehow
+        auto start_dialogue_with_person = std::function([this,name](){
+            dialogue_initiator_.start_dialogue_with(name);
+        });
+        people_.emplace_back(std::make_unique<person>(name, maps_[map_index_].get(), position));
+        interactables_.emplace_back(position,std::move(start_dialogue_with_person));
+    }
+
+	void do_nothing()
 	{
-		people_.emplace_back(std::make_unique<person>(name, maps_[map_index_].get(), position));
-		interactables_.emplace_back(std::make_unique<interactable>(position));
+
 	}
 
 	void add_new_person_at(const Vector2& pos, const std::string& name, int map_index_)
@@ -44,21 +55,20 @@ public:
 		maps_.emplace_back(std::make_unique<Map>(args...));
 	}
 
-	bool try_get_nearest_interactable_object_in_radius(const Vector2 center, const float radius, interactable* nearest_interactable)
+	interactable* try_get_nearest_interactable_object_in_radius(const Vector2 center, const float radius)
 	{
+		interactable* nearest_interactable = nullptr;
 		float min_distance{std::numeric_limits<float>::max()};
-		bool success{false};
 		for(auto& interactable : interactables_)
 		{
-			float distance = center.distance(interactable->position_);
+			float distance = center.distance(interactable.position_);
 			if(radius > distance && distance < min_distance)
 			{
-				success = true;
 				min_distance = distance;
-				nearest_interactable = interactable.get();
+				nearest_interactable = &interactable;
 			}
 		}
-		return success;
+		return nearest_interactable;
 	}
 
 };
