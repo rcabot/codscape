@@ -3,5 +3,5 @@
 
 void interactable::interact()
 {
-    on_interact_();
+    on_interact_(reg);
 }

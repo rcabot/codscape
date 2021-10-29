@@ -29,12 +29,11 @@ public:
 
 	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
     {
-        // todo - allocate this somehow
-        auto start_dialogue_with_person = std::function([this,name](){
-            dialogue_initiator_.start_dialogue_with(name);
+        auto start_dialogue_with_person = std::function([name](registry& r){
+            r.dialogue_initiator_.start_dialogue_with(name);
         });
         people_.emplace_back(std::make_unique<person>(name, maps_[map_index_].get(), position));
-        interactables_.emplace_back(position,std::move(start_dialogue_with_person));
+        interactables_.emplace_back(position,std::move(start_dialogue_with_person),*this);
     }
 
 	void do_nothing()

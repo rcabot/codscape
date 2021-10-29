@@ -4,12 +4,15 @@
 
 #include "Vector2.h"
 #include <functional>
+
+class registry;
 	
 class interactable  
 {
 	public:
 
-		interactable(Vector2 position, std::function<void()>&& on_interact) : position_(position), on_interact_(std::move(on_interact)){}
+		interactable(Vector2 position, std::function<void(registry&)>&& on_interact, registry& reg) 
+			: position_(position), on_interact_(std::move(on_interact)), reg(reg){}
 		~interactable() = default;
 
 		Vector2 position_;
@@ -18,7 +21,8 @@ class interactable
 
 	private:
 		
-		std::function<void()> on_interact_;
+		std::function<void(registry&)> on_interact_;
+		registry& reg;
 
 };
 #endif
