@@ -22,10 +22,12 @@ public:
 	uvector<Map> maps_;
 	uvector<person> people_;
 	std::vector<interactable> interactables_;
+	player_state_machine player_state_machine_;
+	dialogue_state dialogue_state_;
 	dialogue_initiator dialogue_initiator_;
-	registry() : maps_{}, people_{}, interactables_{}, dialogue_initiator_{} {
-
-	}
+	registry() 
+		: maps_{}, people_{}, interactables_{}, player_state_machine_{}, 
+		dialogue_state_{}, dialogue_initiator_{player_state_machine_, dialogue_state_} {}
 
 	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
     {
@@ -35,11 +37,6 @@ public:
         people_.emplace_back(std::make_unique<person>(name, maps_[map_index_].get(), position));
         interactables_.emplace_back(position,std::move(start_dialogue_with_person),*this);
     }
-
-	void do_nothing()
-	{
-
-	}
 
 	void add_new_person_at(const Vector2& pos, const std::string& name, int map_index_)
 	{
