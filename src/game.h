@@ -66,6 +66,8 @@ public:
 
 	void process_sdl_event(const SDL_Event& sdl_event)
 	{
+		auto current_state_info = registry_.player_state_machine_.get_current_state();
+		auto player_interaction_radius{5.f};
 		switch (sdl_event.type)
 		{
 		case SDL_KEYDOWN:
@@ -77,6 +79,18 @@ public:
 				break;
 			case SDLK_F2:
 				registry_.add_new_person_at(player_pos_, person::generate_random_name(),current_map_);
+				break;
+			case SDLK_SPACE:
+				if(current_state_info.can_advance_dialogue_)
+				{
+					registry_.dialogue_state_.advance();
+				}
+				else if(current_state_info.can_interact_)
+				{
+					auto* nearest_interactable_object = registry_.try_get_nearest_interactable_object_in_radius(player_pos_, player_interaction_radius);
+					if(nearest_interactable_object!=nullptr)
+						nearest_interactable_object->interact();
+				}
 				break;
 			default:
 				break;
@@ -90,7 +104,6 @@ public:
 
 	void process_keyboard_state(const Uint8* keyboard_state)
 	{
-		auto player_interaction_radius{5.f};
 		auto current_state_info = registry_.player_state_machine_.get_current_state();
 		// todo: move this to a "mover" class
 		if (time_to_next_input_ <= 0.f)
@@ -106,24 +119,6 @@ public:
 					player_pos_.y -= 1;
 				if (keyboard_state[SDL_SCANCODE_DOWN] && player_can_move_to(Vector2(player_pos_.x, player_pos_.y + 1), current_map))
 					player_pos_.y += 1;
-			}
-			
-
-			// todo: move this to an "interactor" class
-			if (keyboard_state[SDL_SCANCODE_SPACE])
-			{
-				if(current_state_info.can_advance_dialogue_)
-				{
-					registry_.dialogue_state_.advance();
-				}
-
-				if(current_state_info.can_interact_)
-				{
-					auto* nearest_interactable_object = registry_.try_get_nearest_interactable_object_in_radius(player_pos_, player_interaction_radius);
-					if(nearest_interactable_object!=nullptr)
-						nearest_interactable_object->interact();
-				}
-				
 			}
 
 
@@ -200,7 +195,6 @@ private:
 	Vector2 player_pos_onscreen_;
 	int current_map_;
 	registry registry_;
-	//player_state player_state_;
 	
 	
 
