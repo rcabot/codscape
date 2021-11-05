@@ -27,7 +27,7 @@ public:
 	dialogue_initiator dialogue_initiator_;
 	registry() 
 		: maps_{}, people_{}, interactables_{}, player_state_machine_{}, 
-		dialogue_state_{}, dialogue_initiator_{player_state_machine_, dialogue_state_} {}
+		dialogue_state_{*this}, dialogue_initiator_{player_state_machine_, dialogue_state_} {}
 
 	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
     {
