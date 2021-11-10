@@ -1,6 +1,4 @@
 #pragma once
-#include <codecvt>
-#include <locale>
 #include <filesystem>
 
 #include "Map.h"
@@ -61,6 +59,8 @@ public:
 				draw_sprite(person_pos.x - player_offset.x, person_pos.y - player_offset.y, person->get_sprite(), console);
 			}
 		}
+
+		registry_.dialogue_ui_.draw(console);
 
 	}
 
@@ -189,11 +189,12 @@ public:
 
 private:
 	Vector2 player_pos_;
+	int current_map_;
+
 	std::unique_ptr<olcSprite> player_sprite_;
 	float time_to_next_input_;
 	float input_interval_;
 	Vector2 player_pos_onscreen_;
-	int current_map_;
 	registry registry_;
 	
 	

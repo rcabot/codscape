@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "Person.h"
 #include "interactable.hpp"
+#include "dialogue_ui.hpp"
 #include <sstream>
 #include <limits>
 
@@ -25,9 +26,12 @@ public:
 	player_state_machine player_state_machine_;
 	dialogue_state dialogue_state_;
 	dialogue_initiator dialogue_initiator_;
+	dialogue_ui dialogue_ui_;
+
 	registry() 
 		: maps_{}, people_{}, interactables_{}, player_state_machine_{}, 
-		dialogue_state_{*this}, dialogue_initiator_{player_state_machine_, dialogue_state_} {}
+		dialogue_state_{*this}, dialogue_initiator_{player_state_machine_, dialogue_state_},
+		dialogue_ui_{*this} {}
 
 	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
     {

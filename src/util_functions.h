@@ -1,9 +1,12 @@
+#ifndef UTIL_H
+#define UTIL_H
 #pragma once
 #include <sstream>
 #include <string>
 #include <vector>
 #include <iostream>
-
+#include <locale>
+#include <codecvt>
 namespace util
 {
     inline std::vector<std::string> split(const std::string& s, const char delim) {
@@ -42,4 +45,21 @@ namespace util
     	}
         log_format(std::forward<Params>(args)...);
     }
+
+    inline std::wstring s2ws(const std::string& str)
+    {
+        using convert_typeX = std::codecvt_utf8<wchar_t>;
+        std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+        return converterX.from_bytes(str);
+    }
+
+    inline std::string ws2s(const std::wstring& wstr)
+    {
+        using convert_typeX = std::codecvt_utf8<wchar_t>;
+        std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+        return converterX.to_bytes(wstr);
+    }
 }
+#endif
