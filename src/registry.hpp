@@ -7,6 +7,7 @@
 #include "Person.h"
 #include "interactable.hpp"
 #include "dialogue_ui.hpp"
+#include "rect_transform.hpp"
 #include <sstream>
 #include <limits>
 
@@ -23,15 +24,24 @@ public:
 	uvector<Map> maps_;
 	uvector<person> people_;
 	std::vector<interactable> interactables_;
+
 	player_state_machine player_state_machine_;
+
 	dialogue_state dialogue_state_;
 	dialogue_initiator dialogue_initiator_;
 	dialogue_ui dialogue_ui_;
+	rect_transform dialogue_ui_transform_;
 
-	registry() 
-		: maps_{}, people_{}, interactables_{}, player_state_machine_{}, 
-		dialogue_state_{*this}, dialogue_initiator_{player_state_machine_, dialogue_state_},
-		dialogue_ui_{*this} {}
+	registry() : 
+		maps_{}, 
+		people_{}, 
+		interactables_{}, 
+		player_state_machine_{}, 
+		dialogue_state_{*this}, 
+		dialogue_initiator_{player_state_machine_, dialogue_state_},
+		dialogue_ui_transform_{} ,
+		dialogue_ui_{*this,dialogue_ui_transform_}
+		{}
 
 	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
     {

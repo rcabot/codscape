@@ -19,7 +19,8 @@ constexpr inline auto operator "" _(const char* p, const size_t size) -> unsigne
 class game
 {
 public:
-	game() : player_pos_{ 0,0 },
+	game() : 
+		player_pos_{ 0,0 },
 		time_to_next_input_{ 0 },
 		input_interval_{ .02f },
 		player_pos_onscreen_{},
@@ -149,6 +150,9 @@ public:
 		player_sprite_ = person::generate_random_sprite();
 		player_pos_onscreen_ = { console->getWidth() / 2, console->getHeight() / 2 };
 		player_pos_ =  registry_.maps_[0]->get_first_position_where_terrain_is([](const Terrain& t) { return !t.is_mountain_ && !t.is_water_; }, CACHE_DIMENSION);
+
+		registry_.dialogue_ui_transform_.size = {console->getWidth(),console->getHeight()/3};
+		registry_.dialogue_ui_transform_.position = {0,console->getHeight()-registry_.dialogue_ui_transform_.size.y};
 
 		load_game_setup();
 	}
