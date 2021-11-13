@@ -153,7 +153,11 @@ public:
 
 		registry_.dialogue_ui_transform_.size = {console->getWidth(),console->getHeight()/3};
 		registry_.dialogue_ui_transform_.position = {0,console->getHeight()-registry_.dialogue_ui_transform_.size.y};
-
+		// padding
+		registry_.dialogue_ui_transform_.position.x += 1;
+		registry_.dialogue_ui_transform_.position.y -= 1;
+		registry_.dialogue_ui_transform_.size.x -= 2;
+		registry_.dialogue_ui_transform_.size.y -= 1;
 		load_game_setup();
 	}
 
