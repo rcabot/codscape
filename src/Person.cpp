@@ -4,7 +4,7 @@
 
 #include <sstream>
 #include <utility>
-
+#include "util_functions.h"
 #include "rex_paint_chars.h"
 int head = 0;
 std::unique_ptr<olcSprite> person::generate_random_sprite()
@@ -48,14 +48,14 @@ std::wstring person::to_json_string() const
 	std::wstringstream ss;
 	ss
 		<< "{"
-			<< R"("name" : ")" << name_ << R"(",)"
+			<< R"("name" : ")" << util::s2ws(name_) << R"(",)"
 			<< R"("x" : )" << position_.x << ","
 			<< R"("y" : )" << position_.y
 		<< "}";
 	return ss.str();
 }
 
-std::wstring person::generate_random_name()
+std::string person::generate_random_name()
 {
-	return std::to_wstring(rand() * 10000);
+	return std::to_string(rand() * 10000);
 }

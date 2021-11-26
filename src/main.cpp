@@ -12,12 +12,13 @@ int main(int argc, char* argv[])
     auto g = std::make_unique<game>();
     text_input dev_console([&](auto command) {g->handle_command(command); });
 	
-    TCODConsole::setCustomFont("resources/cp437_20x20.png", TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INROW, 16,16);
+    TCODConsole::setCustomFont("resources/polyducks_12x12.png", TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INROW, 16,16);
 
-    const Vector2 resolution{ 1920,1080 };
-    const auto font_resolution{ 20 };
+    const int reference_resolution { 20 };
+    const auto font_resolution{ 12 };
+    const Vector2 resolution{ 1152,648 };
 	
-    TCODConsole::initRoot(resolution.x / font_resolution, resolution.y / font_resolution, "libtcod C++ sample", true, TCOD_RENDERER_SDL);
+    TCODConsole::initRoot(resolution.x / font_resolution, resolution.y / font_resolution, "tcodscape", true, TCOD_RENDERER_SDL);
 
     TCODSystem::setRenderer(TCOD_RENDERER_SDL2);
     TCODSystem::forceFullscreenResolution(1920,1080);

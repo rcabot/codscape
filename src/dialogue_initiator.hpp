@@ -15,7 +15,7 @@ class dialogue_initiator
 		dialogue_initiator(player_state_machine& player_state, dialogue_state& dialogue_state)
 			: player_state_(player_state), dialogue_state_(dialogue_state) {}
 		~dialogue_initiator() = default;
-		void start_dialogue_with(const std::wstring& person_name);
+		void start_dialogue_with(const std::string& person_name);
 
 };
 //#endif

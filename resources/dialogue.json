@@ -1,0 +1,22 @@
+[
+	{
+		"title": "G. Grinner",
+		"tags": "",
+		"body": "My dialogue!\nIs multiline!\nWatch it go!",
+		"position": {
+			"x": 540,
+			"y": 259
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Breadmond the Baker",
+		"tags": "",
+		"body": "I sure do love baking bread!",
+		"position": {
+			"x": 808,
+			"y": 268
+		},
+		"colorID": 0
+	}
+]

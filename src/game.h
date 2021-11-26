@@ -159,6 +159,7 @@ public:
 		registry_.dialogue_ui_transform_.size.x -= 2;
 		registry_.dialogue_ui_transform_.size.y -= 1;
 		load_game_setup();
+		load_dialogue();
 	}
 
 	void handle_command(const std::string& command)
@@ -184,7 +185,7 @@ public:
 				registry_.add_new_person_at(player_pos_, terms_list[2], current_map_);
 				break;
 			case "testperson"_:
-				registry_.add_new_person_at(player_pos_, L"test person",current_map_);
+				registry_.add_new_person_at(player_pos_, "test person",current_map_);
 				break;
 			default: 
 				break;
@@ -247,6 +248,35 @@ private:
 
 	}
 
+	void load_dialogue(const std::filesystem::path& path_to_dialogue_file = "./resources/dialogue.json")
+	{
+		std::fstream s;
+		s.open(path_to_dialogue_file, std::fstream::in);
+		if (!s)
+		{
+			std::cout << "dialogue file did not exist...\n";
+			return;
+		}
+		std::stringstream json_file_buffer;
+		json_file_buffer << s.rdbuf();
+		const auto json_file_str{ json_file_buffer.str() };
+		std::unique_ptr<JSONValue> file_as_json;
+		file_as_json.reset(JSON::Parse(json_file_str.c_str()));
+
+		if (file_as_json->IsArray())
+		{
+			auto nodes{ file_as_json->AsArray() };
+
+			for (auto* json_value : nodes)
+			{
+				const auto& json_value_as_object{ json_value->AsObject() };
+				const auto title {util::ws2s(json_value_as_object.at(L"title")->AsString())};
+				const auto text {util::ws2s(json_value_as_object.at(L"body")->AsString())};
+				registry_.dialogue_state_.create_node(title, text);
+			}
+		}
+	}
+
 	void load_game_setup(const std::filesystem::path& path_to_game_setup_config = "./resources/game_setup.json")
 	{
 		std::fstream s;
@@ -275,7 +305,8 @@ private:
 					Vector2(
 						json_value_as_object.at(L"x")->AsNumber(),
 						json_value_as_object.at(L"y")->AsNumber()),
-					json_value_as_object.at(L"name")->AsString(),current_map_);
+					util::ws2s(json_value_as_object.at(L"name")->AsString()),
+					current_map_);
 			}
 		}
 	}

@@ -35,9 +35,9 @@ public:
 			Terrain(TCOD_yellow, TCOD_dark_yellow,TCOD_CHAR_BLOCK1,false,false),
 			Terrain(TCOD_green, TCOD_yellow,TCOD_CHAR_BLOCK1,false,false),
 			Terrain(TCOD_dark_green, TCOD_green,TCOD_CHAR_BLOCK1,false,false),
-			Terrain(TCOD_grey, TCOD_green,TCOD_CHAR_BLOCK1,true,false),
-			Terrain(TCOD_dark_grey, TCOD_grey,TCOD_CHAR_BLOCK1,true,false),
-			Terrain(TCOD_white, TCOD_grey,TCOD_CHAR_BLOCK1,true,false)
+			Terrain(TCOD_grey, TCOD_green,144,true,false),
+			Terrain(TCOD_dark_grey, TCOD_grey,144,true,false),
+			Terrain(TCOD_white, TCOD_grey,144,true,false)
 		},
 		zoom_factor_{ 50.0 },
 		cached_terrain_indices_{new short[CACHE_DIMENSION*CACHE_DIMENSION]},

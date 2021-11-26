@@ -40,10 +40,10 @@ public:
 		dialogue_state_{*this}, 
 		dialogue_initiator_{player_state_machine_, dialogue_state_},
 		dialogue_ui_transform_{} ,
-		dialogue_ui_{*this,dialogue_ui_transform_}
+		dialogue_ui_{*this,dialogue_ui_transform_,dialogue_state_}
 		{}
 
-	void add_new_person_at(const Vector2& position, const std::wstring name, int map_index_)
+	void add_new_person_at(const Vector2& position, const std::string name, int map_index_)
     {
         auto start_dialogue_with_person = std::function([name](registry& r){
             r.dialogue_initiator_.start_dialogue_with(name);
@@ -51,13 +51,6 @@ public:
         people_.emplace_back(std::make_unique<person>(name, maps_[map_index_].get(), position));
         interactables_.emplace_back(position,std::move(start_dialogue_with_person),*this);
     }
-
-	void add_new_person_at(const Vector2& pos, const std::string& name, int map_index_)
-	{
-		std::wstringstream converter;
-		converter << name.c_str();
-		add_new_person_at(pos, converter.str(),map_index_);
-	}
 
 	template<class...Params>
 	void add_map(Params&&... args)
