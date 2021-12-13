@@ -12,10 +12,20 @@
 	{
 		"title": "Breadmond the Baker",
 		"tags": "",
-		"body": "I sure do love baking bread!",
+		"body": "I sure do love baking bread!\n[[Breadmond2]]",
 		"position": {
 			"x": 808,
 			"y": 268
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Breadmond2",
+		"tags": "",
+		"body": "This text comes from a different node!\n",
+		"position": {
+			"x": 816,
+			"y": 509
 		},
 		"colorID": 0
 	}

@@ -11,17 +11,24 @@ dialogue_state::~dialogue_state()
 void dialogue_state::advance()
 {
     current_line_index_++;
-    if(current_line_index_ >= nodes_[talking_to_name_].lines.size())
+    if(current_line_index_ >= nodes_[current_node_].lines.size())
     {
         current_line_index_ = 0;
-        talking_to_name_ = "";
-        registry_.player_state_machine_.set_state("neutral");
+        if(!nodes_[current_node_].next.empty())
+        {
+            current_node_ = nodes_[current_node_].next;
+        }
+        else
+        {
+            talking_to_name_ = "";
+            registry_.player_state_machine_.set_state("neutral");
+        }
     }
 }
 
 std::string dialogue_state::get_current_text()
 {
-    auto el {nodes_.find(talking_to_name_)};
+    auto el {nodes_.find(current_node_)};
     if(el==nodes_.end()) return "";
     if(current_line_index_ >= el->second.lines.size()) return "";
     return el->second.lines[current_line_index_];
@@ -41,7 +48,13 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
     std::string line;
     while (std::getline(text_stream, line))
     {
-        if (!line.empty()) nodes_[title].lines.push_back(line);
+        // if this is a pointer to node
+        // i.e. [[somenode]]
+        if(line.rfind("[[",0) == 0){
+            // assumes that the pointer has no whitespace
+            nodes_[title].next = line.substr(2,line.size()-4);
+        }
+        else if (!line.empty()) nodes_[title].lines.push_back(line);
     }
     
 }

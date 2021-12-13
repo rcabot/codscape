@@ -11,16 +11,17 @@ class dialogue_state
 {
 	struct node{
 		std::vector<std::string> lines;
+		std::string next = "";
 	};
 	private:
 
 	public:
-		std::string talking_to_name_;
-		std::string current_node_;
+		std::string talking_to_name_ = "";
+		std::string current_node_ = "";
 		registry& registry_;
 		std::unordered_map<std::string,std::string> raw_text_nodes_;
 		std::unordered_map<std::string,node> nodes_;
-		int current_line_index_;
+		int current_line_index_ = 0;
 
 		dialogue_state(registry& registry) : talking_to_name_{""}, registry_{registry} {}
 		~dialogue_state();
