@@ -11,7 +11,7 @@ dialogue_ui::~dialogue_ui()
 
 void dialogue_ui::draw(TCODConsole* console)
 {
-	if(registry_.dialogue_state_.talking_to_name_=="") return;
+	if(registry_.dialogue_state_.get_talking_to_name()=="") return;
 	console->setDefaultBackground(TCOD_black);
 	console->setDefaultForeground(TCOD_white);
 	// todo: cache conversion on load
@@ -21,7 +21,7 @@ void dialogue_ui::draw(TCODConsole* console)
 		rect_transform_.position.x,rect_transform_.position.y,
 		rect_transform_.size.x,rect_transform_.size.y,false,
 		TCOD_BKGND_OVERLAY,
-		registry_.dialogue_state_.talking_to_name_.c_str());
+		registry_.dialogue_state_.get_talking_to_name().c_str());
 	console->printRect(
 		rect_transform_.position.x+1,rect_transform_.position.y+1,
 		rect_transform_.size.x-2,rect_transform_.size.y-2,
