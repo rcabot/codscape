@@ -32,12 +32,15 @@ void dialogue_state::advance()
         switch (current_expression.command)
         {
         case command::DISPLAY:
-            current_text_ = current_expression.operand;
+            current_text_ = current_expression.operands[0];
             wait_for_next_advance = true;
             break;
         case command::GOTO_NODE:
             current_line_index_ = -1;
-            current_node_ = current_expression.operand;
+            current_node_ = current_expression.operands[0];
+            break;
+        case command::ADD_OPTION:
+            options_.emplace_back(current_expression.operands[0],current_expression.operands[1]);
             break;
         
         default:
@@ -80,13 +83,25 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
         // i.e. [[somenode]]
         if(line.rfind("[[",0) == 0)
         {
-            // assumes that the pointer has no whitespace
-            nodes_[title].expressions.emplace_back(command::GOTO_NODE,line.substr(2,line.size()-4));
+            auto divider_pos{line.rfind("|")};
+            if(divider_pos!=-1)
+            {
+                // assumes that the pointer has no whitespace
+                std::vector<std::string> operands{line.substr(2,divider_pos-2),line.substr(divider_pos+1,(line.size() - (divider_pos+1)) - 2)};
+                nodes_[title].expressions.emplace_back(command::ADD_OPTION,operands);
+            }
+            else
+            {
+                // assumes that the pointer has no whitespace
+                std::vector<std::string> operands{line.substr(2,line.size()-4)};
+                nodes_[title].expressions.emplace_back(command::GOTO_NODE,operands);
+            }
         }
         // if this line is dialogue to be displayed
         else if (!line.empty())
         {
-            nodes_[title].expressions.emplace_back(command::DISPLAY,line);
+            std::vector<std::string> operands{line};
+            nodes_[title].expressions.emplace_back(command::DISPLAY,operands);
         }
     }
     

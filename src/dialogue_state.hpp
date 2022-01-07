@@ -13,18 +13,25 @@ class dialogue_state
 	{
 		DISPLAY,
 		GOTO_NODE,
+		ADD_OPTION,
 	};
 
 	struct expression
 	{
-		expression(command c,std::string o) : command{c}, operand{o} {}
+		expression(command c, std::vector<std::string> o) : command{c}, operands{o} {}
 		command command;
-		std::string operand;
+		std::vector<std::string> operands;
 	};
 
 	struct node
 	{
 		std::vector<expression> expressions;
+	};
+	struct option
+	{
+		option(std::string t, std::string n) : text{t}, node{n} {}
+		std::string text;
+		std::string node;
 	};
 	private:
 
@@ -34,6 +41,7 @@ class dialogue_state
 		registry& registry_;
 		std::unordered_map<std::string,std::string> raw_text_nodes_;
 		std::unordered_map<std::string,node> nodes_;
+		std::vector<option> options_;
 		int current_line_index_ = 0;
 
 
