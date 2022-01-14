@@ -49,10 +49,12 @@ class dialogue_state
 		dialogue_state(registry& registry) : registry_{registry} {}
 		~dialogue_state();
 		void advance();
+		void choose_option(int choice);
 		void create_node(std::string title,std::string fulltext);
 		void start_talking_to(std::string person_name);
 		std::string get_current_text();
 		std::string get_talking_to_name();
+		const std::vector<option>& get_options();
 
 };
 #endif

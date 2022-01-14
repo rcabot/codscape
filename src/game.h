@@ -93,6 +93,30 @@ public:
 						nearest_interactable_object->interact();
 				}
 				break;
+			case SDLK_1:
+				if(current_state_info.can_advance_dialogue_)
+				{
+					registry_.dialogue_state_.choose_option(0);
+				}
+				break;
+			case SDLK_2:
+				if(current_state_info.can_advance_dialogue_)
+				{
+					registry_.dialogue_state_.choose_option(1);
+				}
+				break;
+			case SDLK_3:
+				if(current_state_info.can_advance_dialogue_)
+				{
+					registry_.dialogue_state_.choose_option(2);
+				}
+				break;
+			case SDLK_4:
+				if(current_state_info.can_advance_dialogue_)
+				{
+					registry_.dialogue_state_.choose_option(3);
+				}
+				break;
 			default:
 				break;
 			}

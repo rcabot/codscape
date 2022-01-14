@@ -10,8 +10,10 @@ dialogue_state::~dialogue_state()
 
 void dialogue_state::advance()
 {
-    bool wait_for_next_advance = false;
+    if(options_.size() > 0)
+        return;
 
+    bool pause_execution = false;
     do
     {
         current_line_index_++;
@@ -25,6 +27,7 @@ void dialogue_state::advance()
             current_text_ = "";
             registry_.player_state_machine_.set_state("neutral");
             current_line_index_ = -1;
+            options_.clear();
             return;
         }
         // otherwise, execute command
@@ -33,7 +36,7 @@ void dialogue_state::advance()
         {
         case command::DISPLAY:
             current_text_ = current_expression.operands[0];
-            wait_for_next_advance = true;
+            pause_execution = true;
             break;
         case command::GOTO_NODE:
             current_line_index_ = -1;
@@ -41,13 +44,16 @@ void dialogue_state::advance()
             break;
         case command::ADD_OPTION:
             options_.emplace_back(current_expression.operands[0],current_expression.operands[1]);
+            // if this option is the last statement, wait for response
+            if(current_line_index_ == current_node.expressions.size() - 1)
+                pause_execution = true;
             break;
         
         default:
             break;
         }
     }
-    while(!wait_for_next_advance);
+    while(!pause_execution);
 }
 
 std::string dialogue_state::get_current_text()
@@ -56,10 +62,26 @@ std::string dialogue_state::get_current_text()
     
 }
 
+void dialogue_state::choose_option(int choice)
+{
+    if(options_.size() == 0) return;
+    
+    current_line_index_ = -1;
+    current_node_ = options_[choice].node;
+    options_.clear();
+    advance();
+}
+
 std::string dialogue_state::get_talking_to_name()
 {
     return talking_to_name_;
     
+}
+
+
+const std::vector<dialogue_state::option>& dialogue_state::get_options()
+{
+    return options_;
 }
 
 void dialogue_state::start_talking_to(std::string person_name)

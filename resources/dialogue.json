@@ -12,7 +12,7 @@
 	{
 		"title": "Breadmond the Baker",
 		"tags": "",
-		"body": "I sure do love baking bread!\n[[Oh, really?|Breadmond2]]\n[[Wow, cool...|Breadmond3]]",
+		"body": "I sure do love baking bread!\n[[Oh, really?|Breadmond2]]\n[[Wow, cool...|Breadmond3]]\n",
 		"position": {
 			"x": 808,
 			"y": 268
@@ -22,7 +22,7 @@
 	{
 		"title": "Breadmond2",
 		"tags": "",
-		"body": "This text comes from a different node!\n",
+		"body": "Yeah! :)",
 		"position": {
 			"x": 804,
 			"y": 528
@@ -32,7 +32,7 @@
 	{
 		"title": "Breadmond3",
 		"tags": "",
-		"body": "yeah!",
+		"body": "... y-yeah...",
 		"position": {
 			"x": 1053,
 			"y": 522
