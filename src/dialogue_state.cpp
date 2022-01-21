@@ -13,11 +13,16 @@ void dialogue_state::advance()
     if(options_.size() > 0)
         return;
 
+    // current_line_index -> next_line_index
+    // execute_display()... functions 
+    // PAUSE command
+    // consider using recursive behaviour
+    // encapsulate this function as "execute next statement"
     bool pause_execution = false;
     do
     {
         current_line_index_++;
-
+        
         const node& current_node{nodes_[current_node_]};
         // reached the end of the current node?
         if(current_line_index_ >= current_node.expressions.size())
@@ -35,20 +40,26 @@ void dialogue_state::advance()
         switch (current_expression.command)
         {
         case command::DISPLAY:
+        {
             current_text_ = current_expression.operands[0];
             pause_execution = true;
             break;
+        }
         case command::GOTO_NODE:
+        {
             current_line_index_ = -1;
             current_node_ = current_expression.operands[0];
             break;
+        }
         case command::ADD_OPTION:
+        {
             options_.emplace_back(current_expression.operands[0],current_expression.operands[1]);
             // if this option is the last statement, wait for response
-            if(current_line_index_ == current_node.expressions.size() - 1)
+            /*||  is the next one NOT an option?*/
+            if(current_line_index_ == current_node.expressions.size() - 1 )
                 pause_execution = true;
             break;
-        
+        }
         default:
             break;
         }
@@ -89,7 +100,7 @@ void dialogue_state::start_talking_to(std::string person_name)
     current_text_ = "";
     talking_to_name_ = person_name;
     current_node_ = person_name;
-    current_line_index_ = -1;
+    current_line_index_ = -1; // todo: DEFINE this
     advance();
 }
 
@@ -102,20 +113,34 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
     while (std::getline(text_stream, line))
     {
         // if this is a pointer to node
-        // i.e. [[somenode]]
-        if(line.rfind("[[",0) == 0)
+        // i.e. [[somenode]] or [[Option text|optionnode]]
+        // todo: these symbols need to be a constant
+        const std::string pointer_prefix_symbol = "[[";
+        const int pointer_prefix_symbol_length = 2;
+        const std::string divider_prefix_symbol = "|";
+        const int divider_prefix_symbol_length = 1;
+
+        if(line.rfind(pointer_prefix_symbol,0) == 0)
         {
             auto divider_pos{line.rfind("|")};
             if(divider_pos!=-1)
             {
                 // assumes that the pointer has no whitespace
-                std::vector<std::string> operands{line.substr(2,divider_pos-2),line.substr(divider_pos+1,(line.size() - (divider_pos+1)) - 2)};
+                int operand_0_start = pointer_prefix_symbol_length;
+                int operand_0_length = divider_pos - pointer_prefix_symbol_length;
+                int operand_1_start = divider_pos + divider_prefix_symbol_length;
+                int operand_1_length = (line.size() - operand_1_start) - pointer_prefix_symbol_length;
+                std::vector<std::string> operands{
+                    line.substr(operand_0_start,operand_0_length),
+                    line.substr(operand_1_start,operand_1_length)};
                 nodes_[title].expressions.emplace_back(command::ADD_OPTION,operands);
             }
             else
             {
                 // assumes that the pointer has no whitespace
-                std::vector<std::string> operands{line.substr(2,line.size()-4)};
+                int operand_0_start = pointer_prefix_symbol_length;
+                int operand_0_length = line.size()-pointer_prefix_symbol_length*2;
+                std::vector<std::string> operands{line.substr(operand_0_start,operand_0_length)};
                 nodes_[title].expressions.emplace_back(command::GOTO_NODE,operands);
             }
         }

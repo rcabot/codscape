@@ -2,7 +2,7 @@
 	{
 		"title": "G. Grinner",
 		"tags": "",
-		"body": "My dialogue!\nIs multiline!\nWatch it go!",
+		"body": "My dialogue!\nIs multiline!\nWatch it go!\n[[nextnode]]",
 		"position": {
 			"x": 540,
 			"y": 259
@@ -36,6 +36,26 @@
 		"position": {
 			"x": 1053,
 			"y": 522
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Node5",
+		"tags": "",
+		"body": "\n<<spawn new npc CharacterName>>\n<<if expression>>\n[[gotonode]]\n<<else>>\n[[gotonode2]]\n<<endif>>\n",
+		"position": {
+			"x": 1052,
+			"y": 263
+		},
+		"colorID": 0
+	},
+	{
+		"title": "nextnode",
+		"tags": "",
+		"body": "Empty Text",
+		"position": {
+			"x": 542,
+			"y": 532
 		},
 		"colorID": 0
 	}
