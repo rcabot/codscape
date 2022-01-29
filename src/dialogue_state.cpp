@@ -13,58 +13,49 @@ void dialogue_state::advance()
     if(options_.size() > 0)
         return;
 
-    // current_line_index -> next_line_index
-    // execute_display()... functions 
-    // PAUSE command
-    // consider using recursive behaviour
     // encapsulate this function as "execute next statement"
-    bool pause_execution = false;
-    do
+    while(next_line_index_ < nodes_[current_node_].expressions.size())
     {
-        current_line_index_++;
-        
         const node& current_node{nodes_[current_node_]};
-        // reached the end of the current node?
-        if(current_line_index_ >= current_node.expressions.size())
-        {
-            // end dialogue and reset
-            talking_to_name_ = "";
-            current_text_ = "";
-            registry_.player_state_machine_.set_state("neutral");
-            current_line_index_ = -1;
-            options_.clear();
-            return;
-        }
-        // otherwise, execute command
-        const expression& current_expression{current_node.expressions[current_line_index_]};
+        const expression& current_expression{current_node.expressions[next_line_index_]};
         switch (current_expression.command)
         {
         case command::DISPLAY:
         {
             current_text_ = current_expression.operands[0];
-            pause_execution = true;
+            next_line_index_++;
             break;
         }
         case command::GOTO_NODE:
         {
-            current_line_index_ = -1;
+            next_line_index_ = 0;
             current_node_ = current_expression.operands[0];
             break;
         }
         case command::ADD_OPTION:
         {
             options_.emplace_back(current_expression.operands[0],current_expression.operands[1]);
-            // if this option is the last statement, wait for response
-            /*||  is the next one NOT an option?*/
-            if(current_line_index_ == current_node.expressions.size() - 1 )
-                pause_execution = true;
+            next_line_index_++;
             break;
         }
+        case command::PAUSE:
+        {
+            // skip and return
+            next_line_index_++;
+            return;
+        }
         default:
+            next_line_index_++;
             break;
         }
     }
-    while(!pause_execution);
+
+    // end dialogue and reset
+    talking_to_name_ = "";
+    current_text_ = "";
+    registry_.player_state_machine_.set_state("neutral");
+    next_line_index_ = 0;
+    options_.clear();
 }
 
 std::string dialogue_state::get_current_text()
@@ -77,7 +68,7 @@ void dialogue_state::choose_option(int choice)
 {
     if(options_.size() == 0) return;
     
-    current_line_index_ = -1;
+    next_line_index_ = 0;
     current_node_ = options_[choice].node;
     options_.clear();
     advance();
@@ -100,7 +91,7 @@ void dialogue_state::start_talking_to(std::string person_name)
     current_text_ = "";
     talking_to_name_ = person_name;
     current_node_ = person_name;
-    current_line_index_ = -1; // todo: DEFINE this
+    next_line_index_ = 0;
     advance();
 }
 
@@ -144,12 +135,32 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
                 nodes_[title].expressions.emplace_back(command::GOTO_NODE,operands);
             }
         }
-        // if this line is dialogue to be displayed
-        else if (!line.empty())
+        else if (!line.empty()) 
         {
+            // if this line is dialogue to be displayed
             std::vector<std::string> operands{line};
             nodes_[title].expressions.emplace_back(command::DISPLAY,operands);
+            nodes_[title].expressions.emplace_back(command::PAUSE,operands);
         }
     }
+    // append pauses to the end of options series
+    for (int i = 0; i < nodes_[title].expressions.size(); i++)
+    {
+        if(nodes_[title].expressions[i].command == command::ADD_OPTION)
+        {
+            if(i+1 >= nodes_[title].expressions.size())
+            {
+                std::vector<std::string> operands;
+                nodes_[title].expressions.emplace_back(command::PAUSE,operands);
+            }
+            if(nodes_[title].expressions[i].command != command::ADD_OPTION)
+            {
+                std::vector<std::string> operands;
+                auto pos = nodes_[title].expressions.begin() + i + 1;
+                nodes_[title].expressions.emplace(pos,command::PAUSE,operands);
+            }
+        }
+    }
+    
     
 }

@@ -2,7 +2,7 @@
 	{
 		"title": "G. Grinner",
 		"tags": "",
-		"body": "My dialogue!\nIs multiline!\nWatch it go!\n[[nextnode]]",
+		"body": "My dialogue!\\nIs multiline!\\nWatch it go!\n[[nextnode]]",
 		"position": {
 			"x": 540,
 			"y": 259
@@ -12,7 +12,7 @@
 	{
 		"title": "Breadmond the Baker",
 		"tags": "",
-		"body": "I sure do love baking bread!\n[[Oh, really?|Breadmond2]]\n[[Wow, cool...|Breadmond3]]\n",
+		"body": "I sure do love baking bread!\n[[Oh, really?|Breadmond2]]\n[[Wow, cool...|Breadmond3]]",
 		"position": {
 			"x": 808,
 			"y": 268
@@ -25,14 +25,14 @@
 		"body": "Yeah! :)",
 		"position": {
 			"x": 804,
-			"y": 528
+			"y": 529
 		},
 		"colorID": 0
 	},
 	{
 		"title": "Breadmond3",
 		"tags": "",
-		"body": "... y-yeah...",
+		"body": "... y-yeah...\n[[Breadmond4]]",
 		"position": {
 			"x": 1053,
 			"y": 522
@@ -42,20 +42,40 @@
 	{
 		"title": "Node5",
 		"tags": "",
-		"body": "\n<<spawn new npc CharacterName>>\n<<if expression>>\n[[gotonode]]\n<<else>>\n[[gotonode2]]\n<<endif>>\n",
+		"body": "\n<<spawn new npc CharacterName>>\n<<if expression>>\n[[gotonode]]\n<<else>>\n[[optiontext|gotonode2]]\n[[optiontext|gotonode2]]\n<<endif>>",
 		"position": {
-			"x": 1052,
-			"y": 263
+			"x": 1058,
+			"y": 270
 		},
 		"colorID": 0
 	},
 	{
 		"title": "nextnode",
 		"tags": "",
-		"body": "Empty Text",
+		"body": "next text",
 		"position": {
 			"x": 542,
 			"y": 532
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Node7",
+		"tags": "",
+		"body": "[[optiontext|option]]\n[[optiontext|option]]",
+		"position": {
+			"x": 291,
+			"y": 261
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Breadmond4",
+		"tags": "",
+		"body": "we navigated here, to a different node",
+		"position": {
+			"x": 1052,
+			"y": 791
 		},
 		"colorID": 0
 	}

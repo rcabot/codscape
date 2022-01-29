@@ -14,6 +14,7 @@ class dialogue_state
 		DISPLAY,
 		GOTO_NODE,
 		ADD_OPTION,
+		PAUSE,
 	};
 
 	struct expression
@@ -42,7 +43,7 @@ class dialogue_state
 		std::unordered_map<std::string,std::string> raw_text_nodes_;
 		std::unordered_map<std::string,node> nodes_;
 		std::vector<option> options_;
-		int current_line_index_ = 0;
+		int next_line_index_ = 0;
 
 
 	public:
