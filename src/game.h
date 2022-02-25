@@ -62,6 +62,7 @@ public:
 		}
 
 		registry_.dialogue_ui_.draw(console);
+		registry_.inventory_ui_.draw(console);
 
 	}
 
@@ -182,6 +183,11 @@ public:
 		registry_.dialogue_ui_transform_.position.y -= 1;
 		registry_.dialogue_ui_transform_.size.x -= 2;
 		registry_.dialogue_ui_transform_.size.y -= 1;
+
+		registry_.inventory_ui_transform_.size = {console->getWidth()/3,console->getHeight()};
+		registry_.inventory_ui_transform_.position = {console->getWidth()-registry_.inventory_ui_transform_.size.x,0};
+		// padding
+
 		load_game_setup();
 		load_dialogue();
 	}

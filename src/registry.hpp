@@ -8,6 +8,8 @@
 #include "interactable.hpp"
 #include "dialogue_ui.hpp"
 #include "rect_transform.hpp"
+#include "inventory.hpp"
+#include "inventory_ui.hpp"
 #include <sstream>
 #include <limits>
 
@@ -31,6 +33,10 @@ public:
 	dialogue_initiator dialogue_initiator_;
 	dialogue_ui dialogue_ui_;
 	rect_transform dialogue_ui_transform_;
+	inventory inventory_;
+	inventory_ui inventory_ui_;
+	rect_transform inventory_ui_transform_;
+
 
 	registry() : 
 		maps_{}, 
@@ -40,7 +46,9 @@ public:
 		dialogue_state_{*this}, 
 		dialogue_initiator_{player_state_machine_, dialogue_state_},
 		dialogue_ui_transform_{} ,
-		dialogue_ui_{*this,dialogue_ui_transform_,dialogue_state_}
+		dialogue_ui_{*this,dialogue_ui_transform_,dialogue_state_},
+		inventory_{},
+		inventory_ui_{*this,inventory_ui_transform_,inventory_}
 		{}
 
 	void add_new_person_at(const Vector2& position, const std::string name, int map_index_)
