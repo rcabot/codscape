@@ -79,3 +79,5 @@ namespace util
     }
 }
 #endif
+
+constexpr inline auto operator "" _(const char* p, const size_t size) -> unsigned int { return util::hash(p,size); }

@@ -16,5 +16,6 @@ class inventory
 		inventory();
 		~inventory();
 		const std::vector<item>& get_items() const;
+		void add_item(const std::string&);
 
 };

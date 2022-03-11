@@ -15,7 +15,6 @@
 #include "util_functions.h"
 
 
-constexpr inline auto operator "" _(const char* p, const size_t size) -> unsigned int { return util::hash(p,size); }
 class game
 {
 public:

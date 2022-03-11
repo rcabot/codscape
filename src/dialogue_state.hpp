@@ -15,6 +15,7 @@ class dialogue_state
 		GOTO_NODE,
 		ADD_OPTION,
 		PAUSE,
+		GIVE_ITEM
 	};
 
 	struct expression

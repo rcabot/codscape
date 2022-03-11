@@ -17,3 +17,9 @@ const std::vector<inventory::item>& inventory::get_items() const
 {
     return items;
 }
+
+
+void inventory::add_item(const std::string& item_name) 
+{
+    items.emplace_back(item_name);
+}

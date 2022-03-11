@@ -1,6 +1,8 @@
 #include "dialogue_state.hpp"  
 #include "registry.hpp"
+#include "util_functions.h"
 #include <sstream>
+#include <string>
 
 dialogue_state::~dialogue_state()
 {
@@ -43,6 +45,12 @@ void dialogue_state::advance()
             // skip and return
             next_line_index_++;
             return;
+        }
+        case command::GIVE_ITEM:
+        {
+            registry_.inventory_.add_item(current_expression.operands[0]);
+            next_line_index_++;
+            break;
         }
         default:
             next_line_index_++;
@@ -106,21 +114,23 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
         // if this is a pointer to node
         // i.e. [[somenode]] or [[Option text|optionnode]]
         // todo: these symbols need to be a constant
-        const std::string pointer_prefix_symbol = "[[";
-        const int pointer_prefix_symbol_length = 2;
-        const std::string divider_prefix_symbol = "|";
-        const int divider_prefix_symbol_length = 1;
+        const std::string pointer_prefix_token = "[[";
+        const int pointer_prefix_token_length = 2;
+        const std::string divider_prefix_token = "|";
+        const int divider_prefix_token_length = 1;
+        const std::string command_prefix_token = "<<";
+        const int command_prefix_token_length = 2;
 
-        if(line.rfind(pointer_prefix_symbol,0) == 0)
+        if(line.rfind(pointer_prefix_token,0) == 0)
         {
-            auto divider_pos{line.rfind("|")};
+            auto divider_pos{line.rfind(divider_prefix_token)};
             if(divider_pos!=-1)
             {
                 // assumes that the pointer has no whitespace
-                int operand_0_start = pointer_prefix_symbol_length;
-                int operand_0_length = divider_pos - pointer_prefix_symbol_length;
-                int operand_1_start = divider_pos + divider_prefix_symbol_length;
-                int operand_1_length = (line.size() - operand_1_start) - pointer_prefix_symbol_length;
+                int operand_0_start = pointer_prefix_token_length;
+                int operand_0_length = divider_pos - pointer_prefix_token_length;
+                int operand_1_start = divider_pos + divider_prefix_token_length;
+                int operand_1_length = (line.size() - operand_1_start) - pointer_prefix_token_length;
                 std::vector<std::string> operands{
                     line.substr(operand_0_start,operand_0_length),
                     line.substr(operand_1_start,operand_1_length)};
@@ -129,11 +139,29 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
             else
             {
                 // assumes that the pointer has no whitespace
-                int operand_0_start = pointer_prefix_symbol_length;
-                int operand_0_length = line.size()-pointer_prefix_symbol_length*2;
+                int operand_0_start = pointer_prefix_token_length;
+                int operand_0_length = line.size()-pointer_prefix_token_length*2;
                 std::vector<std::string> operands{line.substr(operand_0_start,operand_0_length)};
                 nodes_[title].expressions.emplace_back(command::GOTO_NODE,operands);
             }
+        }
+        else if (line.rfind(command_prefix_token,0) == 0)
+        {
+            // custom command
+            int operands_start = pointer_prefix_token_length;
+            int operands_length = line.size()-pointer_prefix_token_length*2;
+            
+		    auto command_list{ util::split(line.substr(operands_start,operands_length),' ') };
+            std::vector<std::string> operands_list(command_list.begin()+1,command_list.end());
+            switch(util::hash(command_list[0].c_str(),command_list[0].size()))
+            {
+            case "giveitem"_:
+                nodes_[title].expressions.emplace_back(command::GIVE_ITEM,operands_list);
+                break;
+            default: 
+                break;
+            }
+
         }
         else if (!line.empty()) 
         {
