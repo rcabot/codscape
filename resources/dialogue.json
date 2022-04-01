@@ -32,7 +32,7 @@
 	{
 		"title": "Breadmond3",
 		"tags": "",
-		"body": "... y-yeah...\n[[Breadmond4]]",
+		"body": "... y-yeah...\n<<takeitem bread>>\n[[Breadmond4]]",
 		"position": {
 			"x": 1053,
 			"y": 522

@@ -52,6 +52,12 @@ void dialogue_state::advance()
             next_line_index_++;
             break;
         }
+        case command::TAKE_ITEM:
+        {
+            registry_.inventory_.remove_item(current_expression.operands[0]);
+            next_line_index_++;
+            break;
+        }
         default:
             next_line_index_++;
             break;
@@ -74,7 +80,7 @@ std::string dialogue_state::get_current_text()
 
 void dialogue_state::choose_option(int choice)
 {
-    if(options_.size() == 0) return;
+    if(options_.size() == 0 || choice >= options_.size()) return;
     
     next_line_index_ = 0;
     current_node_ = options_[choice].node;
@@ -157,6 +163,9 @@ void dialogue_state::create_node(std::string title,std::string fulltext)
             {
             case "giveitem"_:
                 nodes_[title].expressions.emplace_back(command::GIVE_ITEM,operands_list);
+                break;
+            case "takeitem"_:
+                nodes_[title].expressions.emplace_back(command::TAKE_ITEM,operands_list);
                 break;
             default: 
                 break;
